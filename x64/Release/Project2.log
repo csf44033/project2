@@ -1,3 +1,0 @@
-﻿  Assembling hello.asm...
-LINK : error LNK2001: unresolved external symbol main
-D:\My Stuff\Project2\x64\Release\Project2.exe : fatal error LNK1120: 1 unresolved externals
