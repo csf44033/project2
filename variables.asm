@@ -2,6 +2,7 @@ d2d1Factory				DQ ?
 Main_Handle				DQ ?
 ID2D1HwndRenderTarget	DQ ?
 Black_Brush				DQ ?
+My_Atom					DQ ?
 in_shutdown qword 0
 
 ;WindowProc variables

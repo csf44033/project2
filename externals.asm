@@ -1,6 +1,6 @@
 EXTERN __imp_D2D1CreateFactory		: dq
 EXTERN __imp_GetClientRect			: dq
-EXTERN __imp_RegisterClassExA			: dq
+EXTERN __imp_RegisterClassA		: dq
 EXTERN __imp_GetModuleHandleA		: dq
 EXTERN __imp_DefWindowProcA			: DQ
 EXTERN __imp_ValidateRect			: DQ
@@ -19,7 +19,7 @@ EXTERN __imp_ExitProcess			: dq
 
 D2D1CreateFactory		textequ <__imp_D2D1CreateFactory>
 GetClientRect			textequ <__imp_GetClientRect>
-RegisterClass			textequ <__imp_RegisterClassExA>
+RegisterClassA			textequ <__imp_RegisterClassA>
 GetModuleHandle			textequ <__imp_GetModuleHandleA>
 DefWindowProc			textequ <__imp_DefWindowProcA>
 ValidateRect			textequ <__imp_ValidateRect>

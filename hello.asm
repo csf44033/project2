@@ -16,94 +16,85 @@ INCLUDELIB d2d1.lib
 	Ainclude methods.asm
 .CODE
 	Start PROC
-		LOCAL holder : qword
-		Save_Registers
-
-		;---------------------------
-		; Define handles for WC
-		; 1) Set `wnd_hInst`
-		; 2) Set `wnd_hIcon`
-		; 3) Set `wnd_hCursor`
-		; 4) Register WC
-		;---------------------------
-		; Step 1
+		;-----------------------------------------------------------------------------------------------------------------------
+		; Save non-volatile registers
+		PUSH r12
+		PUSH r13
+		PUSH r14
+		push r15
+		PUSH rdi
+		PUSH rsi
+		PUSH rbx
+		PUSH rbp
+		PUSH rsp
+		;-----------------------------------------------------------------------------------------------------------------------
+		; Register class
 		XOR		rcx, rcx				; hInstance
-		WinCall	GetModuleHandle			; call
+		CALL	GetModuleHandle			; call
 		MOV		wnd_hInst, rax			; set
-		; Step 2
 		XOR		rcx, rcx				; hInstance
 		MOV		rdx, IDI_APPLICATION	; lpIconName
-		WinCall LoadIconA				; call
+		CALL	LoadIconA				; call
 		MOV		wnd_hIcon, rax			; set
-		; Step 3
 		XOR		rcx, rcx				; hInstance
 		MOV		rdx, IDI_APPLICATION	; lpCursorName
-		WinCall LoadCursorA				; call
+		CALL	LoadCursorA				; call
 		MOV		wnd_hCursor, rax		; set
-		; Step 4
 		LEA		rcx, wc					; *lpWndClass
-		WinCall	RegisterClass			; call
-		;---------------------------
-
-		;----------------------------------------
-		; 1) Define `window_rect`
-		; 2) Calculate size
-		; 3) Set edges to zero
-		;----------------------------------------
-		; Step 1
+		CALL	RegisterClassA			; call
+		;-----------------------------------------------------------------------------------------------------------------------
+		; Set `window_rect`
 		MOV		window_rect.right, client_width		; Set `window_rect.right` to `client_width`
 		MOV		window_rect.bottom, client_height	; Set `window_rect.bottom` to `client_height`
-		; Step 2
 		LEA		rcx, window_rect					; lpRect
 		MOV		rdx, main_style						; dwStyle
 		XOR		r8, r8								; bMenu
-		WinCall	AdjustWindowRect					; call
-		; Step 3
+		CALL	AdjustWindowRect					; call
 		MOV		eax, window_rect.left				; Get left
 		SUB		window_rect.right, eax				; Add left and right
 		MOV		window_rect.left, 0					; Set left to `0`
 		MOV		eax, window_rect.top				; Get top
 		SUB		window_rect.bottom, eax				; Add top and bottom
 		MOV		window_rect.top, 0					; Set top to `0`
-		;----------------------------------------
-
-		;---------------------------
-		; Define `work_rect`
-		;---------------------------
+		;-----------------------------------------------------------------------------------------------------------------------
+		; Set `work_rect`
 		MOV		rcx, spi_getworkarea	; uiAction
 		XOR		rdx, rdx				; uiParam
 		LEA		r8, work_rect			; pvParam
 		XOR		r9, r9					; fWinIni
-		WinCall	SystemParametersInfo	; call
-		;---------------------------
+		CALL	SystemParametersInfo	; call
+		;-----------------------------------------------------------------------------------------------------------------------
+		XOR		rcx, rcx				; dwExStyle
+		LEA		rdx, CLASS_NAME			; lpClassName
+		LEA		r8, main_winname		; lpWindowName
+		MOV		r9, main_style			; dwStyle
+		PUSH	0						; lpParam
+		PUSH	wnd_hInst				; hInstance
+		PUSH	0						; hMenu
+		PUSH	0						; hWndParent
+		XOR		rax, rax
+		MOV		eax, window_rect.bottom
+		PUSH	rax						; nHeight
+		XOR		rax, rax
+		MOV		eax, window_rect.right
+		PUSH	rax						; nWidth
+		XOR		rax, rax
+		MOV		eax, work_rect.bottom
+		SUB		eax, window_rect.bottom
+		SHR		rax, 1
+		PUSH	rax						; Y
+		XOR		rax, rax 
+		MOV		eax, work_rect.right 
+		SUB		eax, window_rect.right 
+		SHR		rax, 1
+		PUSH	rax						; X
+		CALL CreateWindowEx				; call
 
-		;-------------------------------------------------------------------------
-		; Create window
-		;-------------------------------------------------------------------------
-		XOR		rcx, rcx															; dwExStyle
-		LEA		rdx, CLASS_NAME														; lpClassName
-		LEA		r8, main_winname													; lpWindowName
-		MOV		r9, main_style														; dwStyle
-		XOR		rbx, rbx															; 
-		MOV		ebx, work_rect.right												; 
-		SUB		ebx, window_rect.right												; 
-		SHR		rbx, 1																; X
-		XOR		r15, r15															;
-		MOV		r15d, work_rect.bottom												;
-		SUB		r15d, window_rect.bottom											;
-		SHR		r15, 1																; Y
-		XOR		r12, r12															;
-		MOV		r12d, window_rect.right												; nWidth
-		XOR		r13, r13															;
-		MOV		r13d, window_rect.bottom											; nHeight
-		mov		r14, wnd_hInst														; hInstance
-		WinCall CreateWindowEx, rcx, rdx, r8, r9, rbx, r15, r12, r13, 0, 0, r14, 0	; call (12 params)
-		;-------------------------------------------------------------------------
-		WinCall GetLastError
+		;WinCall GetLastError
 		;-------------------
-		MOV		rcx, rax
-		MOV		rdx, sw_show
-		WinCall	ShowWindow
+		;MOV		rcx, rax
+		;MOV		rdx, sw_show
+		;WinCall	ShowWindow
 		;-------------------
 
 		;-----[Create Factory]-----
@@ -160,9 +151,15 @@ INCLUDELIB d2d1.lib
 		;MOV rax, ID2D1HwndRenderTarget
 		;xor rcx, rcx
 		;WinCall ExitProcess
-
-
-		Restore_Registers
+		POP r12
+		POP r13
+		POP r14
+		POP r15
+		POP rdi
+		POP rsi
+		POP rbx
+		POP rbp
+		POP rsp
 		ret
 	Start ENDP
 END

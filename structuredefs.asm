@@ -38,9 +38,8 @@ d3dcolorvalue STRUCT
 d3dcolorvalue ENDS
 
 WNDCLASS STRUCT
-	cbSize			DD SIZEOF(WNDCLASS)
 	style			DD ?
-	WNDPROC			DQ ?
+	lpfnWndProc		DQ ?
 	cbClsExtra		DD ?
 	cbWndExtra		DD ?
 	hInstance		DQ ?
@@ -49,5 +48,4 @@ WNDCLASS STRUCT
 	hbrBackground	DQ ?
 	lpszMenuName	DQ ?
 	lpszClassName	DQ ?
-	hIconSm			DQ ?
 WNDCLASS ENDS

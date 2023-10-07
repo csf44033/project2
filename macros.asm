@@ -41,7 +41,8 @@ WinCall macro call_dest:req, argnames:vararg
 	if numArgs lt 4
 		numArgs = 4
 	endif
-	mov                 holder, rsp
+	push				rbp
+	mov					rbp, rsp
 	sub                 rsp, numArgs * 8
 	test                rsp, 0Fh
 	jz                  jump_1
@@ -64,5 +65,6 @@ WinCall macro call_dest:req, argnames:vararg
 		lPointer          = lPointer + 8
 	endm
 	call                call_dest
-	mov                 rsp, holder
+	MOV					rsp, rbp
+	pop                 rbp
 endm  

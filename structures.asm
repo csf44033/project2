@@ -22,9 +22,9 @@ color_black LABEL d3dcolorvalue
 	real4 1.0
 
 wc LABEL WNDCLASS
-				DD sizeof(WNDCLASS)
 				DD classStyle
-				DQ WindowProc
+				DD ?
+				DQ defWindowProc
 				DD 0
 				DD 0
 wnd_hinst		DQ ?
@@ -32,5 +32,4 @@ wnd_hIcon		DQ ?
 wnd_hCursor		DQ ?
 				DQ 0
 				DQ 0
-				DQ CLASS_NAME 
-				DQ 0
+				DQ CLASS_NAME
